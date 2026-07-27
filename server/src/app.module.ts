@@ -9,6 +9,7 @@ import { RedisModule } from './redis';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { ProjectModule } from './modules/project/project.module';
+import { BlogModule } from './modules/blog/blog.module';
 import { JwtAuthGuard } from './common/guards/jwt.guard';
 
 const entityList = Object.values(entities);
@@ -34,6 +35,8 @@ const entityList = Object.values(entities);
     RedisModule,
     AuthModule,
     ProfileModule,
+    ProjectModule,
+    BlogModule,
   ],
   providers: [
     {
