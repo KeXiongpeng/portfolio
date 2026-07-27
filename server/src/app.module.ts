@@ -11,6 +11,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { ProjectModule } from './modules/project/project.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { ContactModule } from './modules/contact/contact.module';
+import { VisitModule } from './modules/visit/visit.module';
 import { JwtAuthGuard } from './common/guards/jwt.guard';
 
 const entityList = Object.values(entities);
@@ -39,6 +40,7 @@ const entityList = Object.values(entities);
     ProjectModule,
     BlogModule,
     ContactModule,
+    VisitModule,
   ],
   providers: [
     {
