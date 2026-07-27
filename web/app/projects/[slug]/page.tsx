@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Markdown } from '@/components/markdown';
+import { JsonLd } from '@/components/json-ld';
 import type { Project } from '@/lib/types';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -27,6 +28,22 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
 
   return (
     <>
+      {project && (
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'CreativeWork',
+            name: project.title,
+            description: project.description,
+            about: project.content,
+            keywords: project.tech_stack,
+            author: { '@type': 'Person', name: 'Your Name' },
+            url: project.demo_url,
+            codeRepository: project.github_url,
+            image: project.cover_url,
+          }}
+        />
+      )}
       <SiteHeader />
       <article className="container mx-auto px-4 py-16 max-w-3xl">
         <Link href="/projects" className="text-sm text-gray-500 hover:underline mb-6 inline-block">← 返回项目列表</Link>

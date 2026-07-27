@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Markdown } from '@/components/markdown';
+import { JsonLd } from '@/components/json-ld';
 import type { Blog } from '@/lib/types';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -33,6 +34,38 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
   return (
     <>
+      {blog && (
+        <>
+          <JsonLd
+            data={{
+              '@context': 'https://schema.org',
+              '@type': 'BlogPosting',
+              headline: blog.title,
+              description: blog.summary,
+              datePublished: blog.published_at,
+              dateModified: blog.updated_at,
+              articleBody: blog.content,
+              keywords: blog.tags,
+              author: { '@type': 'Person', name: 'Your Name' },
+              mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${blog.slug}`,
+              },
+            }}
+          />
+          <JsonLd
+            data={{
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: '首页', item: process.env.NEXT_PUBLIC_SITE_URL },
+                { '@type': 'ListItem', position: 2, name: '博客', item: `${process.env.NEXT_PUBLIC_SITE_URL}/blog` },
+                { '@type': 'ListItem', position: 3, name: blog.title },
+              ],
+            }}
+          />
+        </>
+      )}
       <SiteHeader />
       <article className="container mx-auto px-4 py-16 max-w-3xl">
         <Link href="/blog" className="text-sm text-gray-500 hover:underline mb-6 inline-block">← 返回博客列表</Link>

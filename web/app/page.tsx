@@ -4,6 +4,7 @@ import { api } from '@/lib/api';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Section } from '@/components/section';
+import { JsonLd } from '@/components/json-ld';
 import type { Profile, Project, Blog } from '@/lib/types';
 
 export default async function HomePage() {
@@ -24,6 +25,25 @@ export default async function HomePage() {
 
   return (
     <>
+      {profile && (
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            name: profile.name,
+            jobTitle: profile.title,
+            description: profile.bio,
+            url: process.env.NEXT_PUBLIC_SITE_URL,
+            image: profile.avatar_url,
+            sameAs: [
+              profile.social_links?.github,
+              profile.social_links?.linkedin,
+              profile.social_links?.twitter,
+            ].filter(Boolean),
+            knowsAbout: profile.skills?.map((s) => s.name),
+          }}
+        />
+      )}
       <SiteHeader />
 
       {/* Hero */}
