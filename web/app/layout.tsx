@@ -7,12 +7,29 @@ import { VisitTracker } from '@/components/visit-tracker';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Your Name | Full-Stack Developer',
     template: '%s | Your Name',
   },
   description: '个人作品集与博客',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    locale: 'zh_CN',
+    url: SITE_URL,
+    siteName: 'Your Name',
+    title: 'Your Name | Full-Stack Developer',
+    description: '个人作品集与博客',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Your Name | Full-Stack Developer',
+    description: '个人作品集与博客',
+  },
 };
 
 export default function RootLayout({
