@@ -1,6 +1,5 @@
 // web/components/antd-registry.tsx
 'use client';
-import { StyleProvider } from '@ant-design/cssinjs';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { ReactNode } from 'react';

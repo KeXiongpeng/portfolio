@@ -25,8 +25,8 @@ export async function fetchApi<T>(
   });
 
   if (!res.ok) {
-    const msg = await res.json().catch(() => ({ message: 'Request failed' }));
-    throw new ApiError(res.status, (msg as any).message || res.statusText);
+    const msg = (await res.json().catch(() => ({ message: 'Request failed' }))) as { message?: string };
+    throw new ApiError(res.status, msg.message || res.statusText);
   }
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
@@ -84,7 +84,7 @@ export const api = {
     uploadImage: (file: File) => {
       const form = new FormData();
       form.append('file', file);
-      return fetchApi<{ url: string }>('/api/admin/upload', { method: 'POST', body: form as any });
+      return fetchApi<{ url: string }>('/api/admin/upload', { method: 'POST', body: form });
     },
 
     getAnalytics: () => fetchApi<Analytics>('/api/admin/analytics'),

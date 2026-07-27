@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { Form, Input, Button, message, Spin, Divider } from 'antd';
 import { api } from '@/lib/api';
-import type { Profile } from '@/lib/types';
 
 export default function ProfileAdminPage() {
   const [form] = Form.useForm();
@@ -42,8 +41,8 @@ export default function ProfileAdminPage() {
         },
       });
       message.success('已保存');
-    } catch (err: any) {
-      message.error(err.message || '保存失败');
+    } catch (err: unknown) {
+      message.error(err instanceof Error ? err.message : '保存失败');
     } finally {
       setSaving(false);
     }

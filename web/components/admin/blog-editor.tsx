@@ -48,8 +48,8 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
       }
       message.success(status === 'published' ? '已发布' : '已保存草稿');
       router.push('/admin/blogs');
-    } catch (err: any) {
-      message.error(err.message || '保存失败');
+    } catch (err: unknown) {
+      message.error(err instanceof Error ? err.message : '保存失败');
     } finally {
       setSaving(false);
     }

@@ -1,10 +1,10 @@
 // web/app/admin/(protected)/projects/page.tsx
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type HTMLAttributes } from 'react';
 import { Table, Button, Space, Image, Tag, Popconfirm, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import {
-  DndContext, closestCenter, PointerSensor, useSensor, useSensors,
+  DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent,
 } from '@dnd-kit/core';
 import {
   SortableContext, arrayMove, verticalListSortingStrategy, useSortable,
@@ -14,7 +14,7 @@ import { api } from '@/lib/api';
 import { ProjectForm } from '@/components/admin/project-form';
 import type { Project } from '@/lib/types';
 
-function DraggableRow(props: any) {
+function DraggableRow(props: HTMLAttributes<HTMLTableRowElement> & { 'data-row-key': string | number }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: props['data-row-key'],
   });
@@ -48,7 +48,7 @@ export default function ProjectsAdminPage() {
     message.success('已删除'); load();
   }
 
-  async function onDragEnd(event: any) {
+  async function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     const oldIdx = projects.findIndex((p) => p.id === active.id);
@@ -77,7 +77,7 @@ export default function ProjectsAdminPage() {
             columns={[
               {
                 title: '封面', dataIndex: 'cover_url', width: 100,
-                render: (url?: string) => url ? <Image src={url} width={80} /> : '-',
+                render: (url?: string) => url ? <Image src={url} width={80} alt="项目封面" /> : '-',
               },
               { title: '标题', dataIndex: 'title' },
               {

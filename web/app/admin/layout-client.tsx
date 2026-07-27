@@ -23,8 +23,6 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { token } = theme.useToken();
 
-  const current = '/' + pathname.split('/').slice(0, 3).join('/').split('/').filter(Boolean).slice(0, 2).join('/');
-
   async function logout() {
     await api.logout().catch(() => {});
     router.replace('/admin/login');

@@ -4,23 +4,20 @@ import { useEffect, useState } from 'react';
 import { Row, Col, Card, Statistic, Spin } from 'antd';
 import { api } from '@/lib/api';
 import { PvLine } from '@/components/charts/pv-line';
-import type { Analytics, Blog, Project } from '@/lib/types';
+import type { Analytics, Blog } from '@/lib/types';
 
 export default function DashboardPage() {
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       api.admin.getAnalytics().catch(() => null),
       api.admin.getBlogs().catch(() => []),
-      api.getProjects().catch(() => []),
-    ]).then(([a, b, p]) => {
+    ]).then(([a, b]) => {
       setAnalytics(a);
       setBlogs(b);
-      setProjects(p);
       setLoading(false);
     });
   }, []);
