@@ -1,9 +1,13 @@
+// server/src/app.module.ts — 更新后
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { APP_GUARD } from '@nestjs/core';
 import { join } from 'path';
 import * as entities from './entities';
 import { RedisModule } from './redis';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtAuthGuard } from './common/guards/jwt.guard';
 
 const entityList = Object.values(entities);
 
@@ -26,6 +30,13 @@ const entityList = Object.values(entities);
       serveRoot: '/uploads',
     }),
     RedisModule,
+    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}
