@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -9,6 +10,7 @@ async function bootstrap() {
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
   });
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(3001);
   console.log('Server running on http://localhost:3001');
 }
