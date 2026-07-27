@@ -94,9 +94,11 @@ export const api = {
   },
 };
 
-// Standalone named export for direct import (e.g. visit-tracker.tsx).
-// The same call is also available as api.trackVisit.
+// Standalone named exports for direct import (e.g. visit-tracker.tsx, site-footer.tsx).
+// The same calls are also available as api.trackVisit / api.getVisitCount.
 export const trackVisit = (fingerprint: string) =>
   fetchApi<void>('/api/visit/track', { method: 'POST', body: JSON.stringify({ fingerprint }) });
+
+export const getVisitCount = () => fetchApi<{ total: number }>('/api/visit/count');
 
 export { ApiError };
