@@ -29,6 +29,8 @@ const entityList = Object.values(entities);
         username: process.env.DATABASE_USER || 'postgres',
         password: process.env.DATABASE_PASSWORD || 'postgres',
         database: process.env.DATABASE_NAME || 'portfolio',
+        // 生产环境连接 Neon/Supabase 需要 SSL
+        ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
         entities: entityList,
         synchronize: process.env.NODE_ENV !== 'production',
       }),
