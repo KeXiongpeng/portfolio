@@ -62,6 +62,8 @@ export default async function RootLayout({
           {children}
           <VisitTracker />
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

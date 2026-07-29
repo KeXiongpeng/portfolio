@@ -6,39 +6,39 @@ import { Form, Input, Button, Space, message } from 'antd';
 import { api } from '@/lib/api';
 import MDEditor from '@/components/admin/md-editor-wrapper';
 import { commands as mdCommands } from '@uiw/react-md-editor';
+import type { ICommand } from '@uiw/react-md-editor';
 import type { Blog } from '@/lib/types';
 
 // ===== 自定义对齐命令（Markdown 不支持原生对齐，用 HTML <div align> 实现）=====
 
-const alignLeft = {
+const alignLeft: ICommand = {
   name: 'align-left',
   keyCommand: 'alignLeft',
   buttonProps: { 'aria-label': '左对齐', title: '左对齐' },
-  // 用文字图标，避免依赖外部图标库出现 undefined
   icon: <span style={{ fontSize: 14 }}>⬅</span>,
-  execute: (state: { selectedText: string }, api: { replaceSelection: (t: string) => void }) => {
+  execute: (state, api) => {
     const inner = state.selectedText || '左对齐内容';
     api.replaceSelection(`<div align="left">\n\n${inner}\n\n</div>\n`);
   },
 };
 
-const alignCenter = {
+const alignCenter: ICommand = {
   name: 'align-center',
   keyCommand: 'alignCenter',
   buttonProps: { 'aria-label': '居中对齐', title: '居中对齐' },
   icon: <span style={{ fontSize: 14 }}>⬄</span>,
-  execute: (state: { selectedText: string }, api: { replaceSelection: (t: string) => void }) => {
+  execute: (state, api) => {
     const inner = state.selectedText || '居中内容';
     api.replaceSelection(`<div align="center">\n\n${inner}\n\n</div>\n`);
   },
 };
 
-const alignRight = {
+const alignRight: ICommand = {
   name: 'align-right',
   keyCommand: 'alignRight',
   buttonProps: { 'aria-label': '右对齐', title: '右对齐' },
   icon: <span style={{ fontSize: 14 }}>⬆</span>,
-  execute: (state: { selectedText: string }, api: { replaceSelection: (t: string) => void }) => {
+  execute: (state, api) => {
     const inner = state.selectedText || '右对齐内容';
     api.replaceSelection(`<div align="right">\n\n${inner}\n\n</div>\n`);
   },
@@ -116,7 +116,6 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
           value={content}
           onChange={(val) => setContent(val || '')}
           height={560}
-          mode="live"
           // 保留全部默认命令（标题/加粗/斜体/列表/引用/代码/链接/图片等），再追加 3 个对齐按钮
           commands={[...mdCommands.getCommands(), alignLeft, alignCenter, alignRight]}
           previewOptions={{
