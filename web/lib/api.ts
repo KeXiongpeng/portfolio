@@ -12,16 +12,33 @@ class ApiError extends Error {
   }
 }
 
+// 把后端返回的相对资源路径（如 /uploads/xxx）补全为完整的后端 URL，
+// 否则在前台页面（端口 3000）会解析成 3000 而访问不到后端（3001）的资源。
+export function resolveAssetUrl(url?: string | null): string | undefined {
+  if (!url) return undefined;
+  if (/^https?:\/\//i.test(url)) return url; // 已是完整 URL（如 GitHub 头像）
+  return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
 export async function fetchApi<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  // FormData 时不手动设置 Content-Type，交给浏览器自动加上 multipart boundary
+  const isFormData = options.body instanceof FormData;
+  // 计算最终的 cache 策略：
+  // - 显式传了 cache 就用传入值
+  // - 传了 next.revalidate 等 ISR 选项时不设 cache（避免与 no-store 冲突）
+  // - 否则默认 no-store，保证管理端数据实时
+  const hasNextRevalidate = options.next && 'revalidate' in (options.next as object);
+  const finalCache = options.cache ?? (hasNextRevalidate ? undefined : 'no-store');
   const res = await fetch(`${API_URL}${path}`, {
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options.headers },
+    headers: isFormData
+      ? options.headers
+      : { 'Content-Type': 'application/json', ...options.headers },
     ...options,
-    // Server Components 中需强制动态获取，避免缓存
-    cache: options.cache ?? 'no-store',
+    ...(finalCache ? { cache: finalCache } : {}),
   });
 
   if (!res.ok) {
@@ -33,14 +50,14 @@ export async function fetchApi<T>(
 }
 
 export const api = {
-  // 公开接口
-  getProfile: () => fetchApi<Profile>('/api/profile'),
+  // 公开接口（短时缓存，让前台导航即时响应，30s 后自动重新校验）
+  getProfile: () => fetchApi<Profile>('/api/profile', { next: { revalidate: 30 } }),
   getProjects: (tag?: string) =>
-    fetchApi<Project[]>(`/api/projects${tag ? `?tag=${encodeURIComponent(tag)}` : ''}`),
-  getProject: (slug: string) => fetchApi<Project>(`/api/projects/${slug}`),
+    fetchApi<Project[]>(`/api/projects${tag ? `?tag=${encodeURIComponent(tag)}` : ''}`, { next: { revalidate: 30 } }),
+  getProject: (slug: string) => fetchApi<Project>(`/api/projects/${slug}`, { next: { revalidate: 30 } }),
   getBlogs: (page = 1, limit = 10, tag?: string) =>
-    fetchApi<BlogListResponse>(`/api/blogs?page=${page}&limit=${limit}${tag ? `&tag=${encodeURIComponent(tag)}` : ''}`),
-  getBlog: (slug: string) => fetchApi<Blog>(`/api/blogs/${slug}`),
+    fetchApi<BlogListResponse>(`/api/blogs?page=${page}&limit=${limit}${tag ? `&tag=${encodeURIComponent(tag)}` : ''}`, { next: { revalidate: 30 } }),
+  getBlog: (slug: string) => fetchApi<Blog>(`/api/blogs/${slug}`, { next: { revalidate: 30 } }),
   submitContact: (data: { name: string; email: string; message: string }) =>
     fetchApi<void>('/api/contact', { method: 'POST', body: JSON.stringify(data) }),
   trackVisit: (fingerprint: string) =>

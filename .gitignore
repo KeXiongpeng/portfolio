@@ -7,3 +7,7 @@ dist/
 .DS_Store
 uploads/
 temp/
+# Word 临时文件
+~$*.docx
+# 内部规划文档（不需要上传仓库）
+.superpowers/

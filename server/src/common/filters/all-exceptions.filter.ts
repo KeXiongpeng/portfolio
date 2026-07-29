@@ -8,6 +8,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    // 打印完整错误堆栈到控制台，便于调试
+    console.error('[ExceptionFilter]', exception);
+
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const message = exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
 

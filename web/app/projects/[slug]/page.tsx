@@ -45,32 +45,41 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
         />
       )}
       <SiteHeader />
-      <article className="container mx-auto px-4 py-16 max-w-3xl">
-        <Link href="/projects" className="text-sm text-gray-500 hover:underline mb-6 inline-block">← 返回项目列表</Link>
+      <article className="container mx-auto px-4 py-16 md:py-24 max-w-3xl">
+        <Link href="/projects" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition mb-8">
+          ← 返回项目列表
+        </Link>
 
         {project.cover_url && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={project.cover_url} alt={project.title} className="w-full rounded-lg mb-6" />
+          <img src={project.cover_url} alt={project.title} className="w-full rounded-xl mb-8 border border-gray-200 dark:border-gray-800" />
         )}
 
-        <h1 className="text-3xl font-bold">{project.title}</h1>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{project.title}</h1>
+        {project.description && (
+          <p className="mt-3 text-lg text-gray-500 dark:text-gray-400">{project.description}</p>
+        )}
+        <div className="mt-5 flex flex-wrap gap-2">
           {project.tech_stack.map((t) => (
-            <span key={t} className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">{t}</span>
+            <span key={t} className="text-xs px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">{t}</span>
           ))}
         </div>
 
-        <div className="mt-6 flex gap-4">
+        <div className="mt-6 flex flex-wrap gap-3">
           {project.demo_url && (
-            <a href={project.demo_url} target="_blank" rel="noreferrer" className="px-4 py-2 rounded bg-blue-500 text-white text-sm hover:bg-blue-600">在线演示</a>
+            <a href={project.demo_url} target="_blank" rel="noreferrer" className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition shadow-sm shadow-blue-500/20">
+              在线演示
+            </a>
           )}
           {project.github_url && (
-            <a href={project.github_url} target="_blank" rel="noreferrer" className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 text-sm hover:bg-gray-100 dark:hover:bg-gray-800">GitHub</a>
+            <a href={project.github_url} target="_blank" rel="noreferrer" className="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+              GitHub
+            </a>
           )}
         </div>
 
         {project.content && (
-          <div className="mt-8"><Markdown content={project.content} /></div>
+          <div className="mt-10"><Markdown content={project.content} /></div>
         )}
       </article>
       <SiteFooter />

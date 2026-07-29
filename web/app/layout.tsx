@@ -58,7 +58,7 @@ export default async function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={inter.className}>
         <JsonLd data={websiteSchema} />
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           {children}
           <VisitTracker />
         </ThemeProvider>

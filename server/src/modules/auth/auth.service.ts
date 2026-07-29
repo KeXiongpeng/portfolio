@@ -15,13 +15,15 @@ export class AuthService {
     private redisService: RedisService,
   ) {}
 
-  async validateGithubUser(githubId: number, username: string, avatarUrl: string): Promise<User | null> {
+  async validateGithubUser(githubId: number | string, username: string, avatarUrl: string): Promise<User | null> {
+    // GitHub profile.id 可能是字符串，统一转为数字
+    const numericId = Number(githubId);
     const allowedIds = (process.env.ALLOWED_GITHUB_IDS || '').split(',').map(Number);
-    if (!allowedIds.includes(githubId)) return null;
+    if (!allowedIds.includes(numericId)) return null;
 
-    let user = await this.userRepo.findOne({ where: { github_id: githubId } });
+    let user = await this.userRepo.findOne({ where: { github_id: numericId } });
     if (!user) {
-      user = this.userRepo.create({ github_id: githubId, username, avatar_url: avatarUrl });
+      user = this.userRepo.create({ github_id: numericId, username, avatar_url: avatarUrl });
       user = await this.userRepo.save(user);
     } else {
       user.avatar_url = avatarUrl;

@@ -67,35 +67,37 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
         </>
       )}
       <SiteHeader />
-      <article className="container mx-auto px-4 py-16 max-w-3xl">
-        <Link href="/blog" className="text-sm text-gray-500 hover:underline mb-6 inline-block">← 返回博客列表</Link>
+      <article className="container mx-auto px-4 py-16 md:py-24 max-w-3xl">
+        <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition mb-8">
+          ← 返回博客列表
+        </Link>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {blog.published_at?.slice(0, 10)} · 阅读 {blog.view_count}
         </p>
-        <h1 className="text-3xl font-bold mt-2">{blog.title}</h1>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3">{blog.title}</h1>
+        <div className="mt-5 flex flex-wrap gap-2">
           {blog.tags.map((t) => (
-            <span key={t} className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">{t}</span>
+            <span key={t} className="text-xs px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">{t}</span>
           ))}
         </div>
 
-        <div className="mt-8"><Markdown content={blog.content} /></div>
+        <div className="mt-10"><Markdown content={blog.content} /></div>
 
         {/* 上一篇/下一篇 */}
-        <nav className="mt-12 grid grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-800 pt-6">
+        <nav className="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-800 pt-8">
           {prev ? (
-            <Link href={`/blog/${prev.slug}`} className="text-sm hover:underline">
-              <span className="text-gray-500">← 上一篇</span>
-              <p className="font-medium">{prev.title}</p>
+            <Link href={`/blog/${prev.slug}`} className="group rounded-xl border border-gray-200 dark:border-gray-800 p-4 transition hover:border-blue-500/50 hover:shadow-sm">
+              <span className="text-xs text-gray-500 dark:text-gray-400">← 上一篇</span>
+              <p className="font-medium mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">{prev.title}</p>
             </Link>
-          ) : <div />}
+          ) : <div className="hidden sm:block" />}
           {next ? (
-            <Link href={`/blog/${next.slug}`} className="text-sm hover:underline text-right">
-              <span className="text-gray-500">下一篇 →</span>
-              <p className="font-medium">{next.title}</p>
+            <Link href={`/blog/${next.slug}`} className="group rounded-xl border border-gray-200 dark:border-gray-800 p-4 transition hover:border-blue-500/50 hover:shadow-sm sm:text-right">
+              <span className="text-xs text-gray-500 dark:text-gray-400">下一篇 →</span>
+              <p className="font-medium mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">{next.title}</p>
             </Link>
-          ) : <div />}
+          ) : <div className="hidden sm:block" />}
         </nav>
       </article>
       <SiteFooter />

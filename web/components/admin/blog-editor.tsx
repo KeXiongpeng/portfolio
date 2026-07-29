@@ -4,8 +4,45 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Form, Input, Button, Space, message } from 'antd';
 import { api } from '@/lib/api';
-import { Markdown } from '@/components/markdown';
+import MDEditor from '@/components/admin/md-editor-wrapper';
+import { commands as mdCommands } from '@uiw/react-md-editor';
 import type { Blog } from '@/lib/types';
+
+// ===== 自定义对齐命令（Markdown 不支持原生对齐，用 HTML <div align> 实现）=====
+
+const alignLeft = {
+  name: 'align-left',
+  keyCommand: 'alignLeft',
+  buttonProps: { 'aria-label': '左对齐', title: '左对齐' },
+  // 用文字图标，避免依赖外部图标库出现 undefined
+  icon: <span style={{ fontSize: 14 }}>⬅</span>,
+  execute: (state: { selectedText: string }, api: { replaceSelection: (t: string) => void }) => {
+    const inner = state.selectedText || '左对齐内容';
+    api.replaceSelection(`<div align="left">\n\n${inner}\n\n</div>\n`);
+  },
+};
+
+const alignCenter = {
+  name: 'align-center',
+  keyCommand: 'alignCenter',
+  buttonProps: { 'aria-label': '居中对齐', title: '居中对齐' },
+  icon: <span style={{ fontSize: 14 }}>⬄</span>,
+  execute: (state: { selectedText: string }, api: { replaceSelection: (t: string) => void }) => {
+    const inner = state.selectedText || '居中内容';
+    api.replaceSelection(`<div align="center">\n\n${inner}\n\n</div>\n`);
+  },
+};
+
+const alignRight = {
+  name: 'align-right',
+  keyCommand: 'alignRight',
+  buttonProps: { 'aria-label': '右对齐', title: '右对齐' },
+  icon: <span style={{ fontSize: 14 }}>⬆</span>,
+  execute: (state: { selectedText: string }, api: { replaceSelection: (t: string) => void }) => {
+    const inner = state.selectedText || '右对齐内容';
+    api.replaceSelection(`<div align="right">\n\n${inner}\n\n</div>\n`);
+  },
+};
 
 export function BlogEditor({ initial }: { initial?: Blog }) {
   const router = useRouter();
@@ -72,19 +109,22 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
         </Form.Item>
       </Form>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, height: 500 }}>
-        <div>
-          <div style={{ marginBottom: 8, fontWeight: 500 }}>正文（Markdown）</div>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            style={{ width: '100%', height: '100%', resize: 'none', fontFamily: 'monospace', padding: 12, borderRadius: 6, border: '1px solid #444', background: '#1f1f1f', color: '#eee' }}
-          />
-        </div>
-        <div style={{ overflow: 'auto', border: '1px solid #444', borderRadius: 6, padding: 12 }}>
-          <div style={{ marginBottom: 8, fontWeight: 500 }}>预览</div>
-          <Markdown content={content} />
-        </div>
+      <div style={{ marginBottom: 8, fontWeight: 500 }}>正文（Markdown）</div>
+      {/* @uiw/react-md-editor：内置白色工具栏 + 左右分栏（编辑 + 预览） */}
+      <div data-color-mode="light">
+        <MDEditor
+          value={content}
+          onChange={(val) => setContent(val || '')}
+          height={560}
+          mode="live"
+          // 保留全部默认命令（标题/加粗/斜体/列表/引用/代码/链接/图片等），再追加 3 个对齐按钮
+          commands={[...mdCommands.getCommands(), alignLeft, alignCenter, alignRight]}
+          previewOptions={{
+            // 让编辑器内的预览也能渲染对齐用的 HTML
+            rehypePlugins: [],
+          }}
+          style={{ background: '#fff' }}
+        />
       </div>
 
       <Space style={{ marginTop: 16 }}>

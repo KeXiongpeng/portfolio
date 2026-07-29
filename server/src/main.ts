@@ -1,3 +1,14 @@
+import { join } from 'path';
+import * as dotenv from 'dotenv';
+// 加载项目根目录的 .env 文件（本地开发用；Docker 部署时 env_file 已注入）
+//dotenv.config({ path: join(process.cwd(), '..', '.env') });
+
+// 仅本地开发加载.env;Vercel会自动注入环境变量
+if (process.env.NODE_ENV !== 'production') {
+  const dotenv = await import('dotenv');
+  dotenv.config({ path: join(process.cwd(), '..', '.env') });
+}
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
