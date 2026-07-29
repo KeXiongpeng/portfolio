@@ -5,18 +5,19 @@
       "src": "api/index.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["src/**", "package.json"]
+        "includeFiles": ["src/**", "package.json", "tsconfig.json"]
       }
     },
     {
       "src": "api/cron.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["src/**", "package.json"]
+        "includeFiles": ["src/**", "package.json", "tsconfig.json"]
       }
     }
   ],
   "routes": [
+    { "src": "/api/cron", "dest": "/api/cron" },
     { "src": "/api/(.*)", "dest": "/api/index" },
     { "src": "/(.*)", "dest": "/api/index" }
   ],
