@@ -6,8 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { VisitTracker } from '@/components/visit-tracker';
 import { api } from '@/lib/api';
 import { JsonLd } from '@/components/json-ld';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@/components/analytics';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -65,7 +64,6 @@ export default async function RootLayout({
           <VisitTracker />
         </ThemeProvider>
         <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
