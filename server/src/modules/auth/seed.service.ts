@@ -1,7 +1,6 @@
 import { Injectable, OnApplicationBootstrap, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 import { Role, User, Account } from '../../entities';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class SeedService implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
     await this.seedRoles();
     await this.migrateOldGithubUsers();
-    await this.seedInitialAdmin();
+    await this.warnIfNoAdmin();
   }
 
   /** 初始化默认角色 */
@@ -81,53 +80,18 @@ export class SeedService implements OnApplicationBootstrap {
     }
   }
 
-  /** 初始管理员引导（仅首次） */
-  private async seedInitialAdmin() {
-    const adminUsername = process.env.ADMIN_USERNAME;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@localhost';
-
-    if (!adminUsername || !adminPassword) {
-      this.logger.log('未配置 ADMIN_USERNAME/ADMIN_PASSWORD，跳过初始管理员创建');
-      return;
-    }
-
-    // 检查是否已存在管理员
-    const adminRole = await this.roleRepo.findOne({ where: { name: 'admin' } });
-    if (!adminRole) return;
-    const existingAdmin = await this.userRepo.findOne({ where: { role_id: adminRole.id } });
-    if (existingAdmin) return;
-
-    // 检查用户名是否已被占用
-    const existingAccount = await this.accountRepo.findOne({
-      where: { provider: 'local', provider_user_id: adminUsername },
-    });
-    if (existingAccount) {
-      this.logger.warn(`用户名 ${adminUsername} 已存在，跳过管理员创建`);
-      return;
-    }
-
-    // 使用 super_admin 角色
+  /** 无管理员时打印提示（不自动创建，改由 npm run create-admin 脚本创建） */
+  private async warnIfNoAdmin() {
     const superRole = await this.roleRepo.findOne({ where: { name: 'super_admin' } });
-    const roleId = superRole?.id || adminRole.id;
+    const fallbackAdmin = await this.roleRepo.findOne({ where: { name: 'admin' } });
+    const roleId = superRole?.id || fallbackAdmin?.id;
+    if (!roleId) return; // 角色尚未初始化，下次启动再提示
 
-    const user = this.userRepo.create({
-      username: adminUsername,
-      email: adminEmail,
-      role_id: roleId,
-    });
-    const savedUser = await this.userRepo.save(user);
-
-    const passwordHash = await bcrypt.hash(adminPassword, 10);
-    await this.accountRepo.save(
-      this.accountRepo.create({
-        user_id: savedUser.id,
-        provider: 'local',
-        provider_user_id: adminUsername,
-        password_hash: passwordHash,
-      }),
-    );
-
-    this.logger.log(`已创建初始管理员账号: ${adminUsername}`);
+    const existing = await this.userRepo.findOne({ where: { role_id: roleId } });
+    if (!existing) {
+      this.logger.warn(
+        '未检测到管理员账号。请在 server 目录运行 `npm run create-admin` 创建首个管理员。',
+      );
+    }
   }
 }
