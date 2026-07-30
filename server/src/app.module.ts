@@ -15,6 +15,7 @@ import { ContactModule } from './modules/contact/contact.module';
 import { VisitModule } from './modules/visit/visit.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { JwtAuthGuard } from './common/guards/jwt.guard';
+import { RolesGuard } from './common/guards/roles.guard';
 
 const entityList = Object.values(entities);
 
@@ -32,7 +33,8 @@ const entityList = Object.values(entities);
         // 生产环境连接 Neon/Supabase 需要 SSL
         ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
         entities: entityList,
-        synchronize: process.env.NODE_ENV !== 'production',
+        // 生产环境默认不自动建表；通过 SYNC_DB=true 可临时开启（首次部署建表用）
+        synchronize: process.env.NODE_ENV !== 'production' || process.env.SYNC_DB === 'true',
       }),
     }),
     ServeStaticModule.forRoot({
@@ -52,6 +54,10 @@ const entityList = Object.values(entities);
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
