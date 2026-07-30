@@ -412,20 +412,62 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 ---
 
-## 第六部分：验证部署
+## 第六部分：首次创建管理员
+
+应用首次部署完成后（角色已由应用启动时自动初始化），需要创建第一个管理员账号。
+由于 Vercel 是 serverless 环境，无法运行交互式命令，因此**在本地**执行创建脚本。
+
+> 脚本会写入生产数据库，需临时在本地 `server/.env` 指向生产 DB。
+
+### 步骤
+
+1. 在本地 `server/.env` 临时填入**生产**数据库连接（用完即删）：
+
+   ```env
+   DATABASE_HOST=ep-xxx.neon.tech
+   DATABASE_PORT=5432
+   DATABASE_NAME=portfolio
+   DATABASE_USER=portfolio_user
+   DATABASE_PASSWORD=<生产密码>
+   DATABASE_SSL=true
+   REDIS_HOST=<生产 Redis host>
+   REDIS_PORT=<端口>
+   REDIS_PASSWORD=<密码>
+   REDIS_TLS=true
+   ```
+
+2. 运行创建脚本：
+
+   ```powershell
+   cd server
+   npm run create-admin
+   ```
+
+   按提示输入用户名（默认 `admin`）、邮箱、密码（至少 8 位，掩码输入）。
+
+3. 看到 `✓ 管理员创建成功` 后，**立即把 `server/.env` 改回本地开发值**，避免生产凭据残留。
+
+4. 访问 `https://portfolio.vercel.app/admin/login` 用刚创建的账号登录。
+
+> 安全说明：本仓库已移除 `.env` 中的默认管理员密码。管理员凭据只能通过此脚本交互式创建，
+> 密码以 bcrypt hash 存储于 PostgreSQL 的 `accounts.password_hash` 列，明文绝不入库。
+
+---
+
+## 第七部分：验证部署
 
 | 验证项 | 方法 |
 |--------|------|
 | 前端访问 | 打开 `https://portfolio.vercel.app`，页面正常显示 |
 | 后端 API | 浏览器打开 `https://portfolio-api-xxx.vercel.app/api/profile`，返回 JSON |
-| 后台登录 | 打开 `https://portfolio.vercel.app/admin/login`，GitHub 登录成功 |
+| 后台登录 | 打开 `https://portfolio.vercel.app/admin/login`，GitHub 登录或刚创建的账号密码登录成功 |
 | 头像上传 | 后台个人信息上传图片，前台正常显示 |
 | Analytics | Vercel Dashboard → portfolio 项目 → **Analytics** 标签页查看数据 |
 | Speed Insights | Vercel Dashboard → portfolio 项目 → **Speed Insights** 标签页查看指标 |
 
 ---
 
-## 第七部分：后续更新部署
+## 第八部分：后续更新部署
 
 ### 7.1 自动部署（推荐）
 
