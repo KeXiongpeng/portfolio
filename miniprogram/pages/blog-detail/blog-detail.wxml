@@ -1,0 +1,22 @@
+<loading wx:if="{{loading}}" />
+<block wx:elif="{{blog}}">
+  <view class="container">
+    <view class="title">{{blog.title}}</view>
+    <view class="meta">
+      <text>{{blog.published_at_label}}</text>
+      <text class="dot">·</text>
+      <text>阅读 {{blog.view_count}}</text>
+    </view>
+    <view class="tags">
+      <tag-pill wx:for="{{blog.tags}}" wx:key="*this" text="{{item}}" />
+    </view>
+
+    <view wx:if="{{blog.summary}}" class="summary">{{blog.summary}}</view>
+
+    <!-- towxml 渲染 markdown 正文 -->
+    <view wx:if="{{article}}">
+      <towxml nodes="{{article}}" />
+    </view>
+    <view wx:elif="{{blog.content}}" class="content-text">{{blog.content}}</view>
+  </view>
+</block>

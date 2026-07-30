@@ -1,25 +1,15 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["src/**", "package.json", "tsconfig.json"]
-      }
+  "outputDirectory": ".",
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "src/**"
     },
-    {
-      "src": "api/cron.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["src/**", "package.json", "tsconfig.json"]
-      }
+    "api/cron.ts": {
+      "includeFiles": "src/**"
     }
-  ],
-  "routes": [
-    { "src": "/api/cron", "dest": "/api/cron" },
-    { "src": "/api/(.*)", "dest": "/api/index" },
-    { "src": "/(.*)", "dest": "/api/index" }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
   ],
   "crons": [
     {

@@ -1,0 +1,33 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/projects/projects",
+    "pages/blogs/blogs",
+    "pages/about/about",
+    "pages/project-detail/project-detail",
+    "pages/blog-detail/blog-detail",
+    "pages/contact/contact"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "个人作品集",
+    "backgroundColor": "#f7f7f9",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#3b82f6",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页", "iconPath": "assets/tabbar/home.png", "selectedIconPath": "assets/tabbar/home-active.png" },
+      { "pagePath": "pages/projects/projects", "text": "项目", "iconPath": "assets/tabbar/folder.png", "selectedIconPath": "assets/tabbar/folder-active.png" },
+      { "pagePath": "pages/blogs/blogs", "text": "博客", "iconPath": "assets/tabbar/blog.png", "selectedIconPath": "assets/tabbar/blog-active.png" },
+      { "pagePath": "pages/about/about", "text": "关于", "iconPath": "assets/tabbar/about.png", "selectedIconPath": "assets/tabbar/about-active.png" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

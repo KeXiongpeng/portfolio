@@ -1,0 +1,27 @@
+<loading wx:if="{{loading}}" />
+<block wx:elif="{{project}}">
+  <image wx:if="{{coverUrl}}" class="hero-cover" src="{{coverUrl}}" mode="aspectFill" />
+
+  <view class="container">
+    <view class="title">{{project.title}}</view>
+    <view class="stack">
+      <tag-pill wx:for="{{project.tech_stack}}" wx:key="*this" text="{{item}}" />
+    </view>
+
+    <view wx:if="{{project.description}}" class="desc card">
+      <view class="block-title">简介</view>
+      <view class="block-text">{{project.description}}</view>
+    </view>
+
+    <!-- content 用 towxml 渲染 markdown -->
+    <view wx:if="{{contentNodes}}" class="content card">
+      <view class="block-title">详细介绍</view>
+      <towxml nodes="{{contentNodes}}" />
+    </view>
+
+    <view class="links">
+      <view wx:if="{{project.demo_url}}" class="link-btn primary" bindtap="onCopyLink" data-url="{{project.demo_url}}">复制 Demo 链接</view>
+      <view wx:if="{{project.github_url}}" class="link-btn" bindtap="onCopyLink" data-url="{{project.github_url}}">复制 GitHub 链接</view>
+    </view>
+  </view>
+</block>

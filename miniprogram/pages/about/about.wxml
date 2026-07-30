@@ -1,0 +1,59 @@
+<loading wx:if="{{loading}}" />
+<block wx:elif="{{profile}}">
+  <view class="container">
+    <!-- 头像与基本信息 -->
+    <view class="header">
+      <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+      <view class="name">{{profile.name}}</view>
+      <view class="title-text">{{profile.title}}</view>
+    </view>
+
+    <!-- 简介 -->
+    <view wx:if="{{profile.about}}" class="card">
+      <view class="block-title">关于</view>
+      <view class="block-text">{{profile.about}}</view>
+    </view>
+
+    <!-- 工作经历 -->
+    <view wx:if="{{profile.experience.length}}" class="card">
+      <view class="block-title">工作经历</view>
+      <view class="timeline">
+        <view class="timeline-item" wx:for="{{profile.experience}}" wx:key="company">
+          <view class="timeline-dot"></view>
+          <view class="timeline-content">
+            <view class="timeline-role">{{item.role}} · {{item.company}}</view>
+            <view class="timeline-period">{{item.period}}</view>
+            <view class="timeline-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 教育背景 -->
+    <view wx:if="{{profile.education.length}}" class="card">
+      <view class="block-title">教育背景</view>
+      <view class="timeline">
+        <view class="timeline-item" wx:for="{{profile.education}}" wx:key="school">
+          <view class="timeline-dot"></view>
+          <view class="timeline-content">
+            <view class="timeline-role">{{item.degree}} · {{item.school}}</view>
+            <view class="timeline-period">{{item.period}}</view>
+            <view class="timeline-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 社交 -->
+    <view class="card">
+      <view class="block-title">联系方式</view>
+      <view class="links">
+        <view wx:if="{{profile.social_links.github}}" class="link-item" bindtap="onCopyLink" data-url="{{profile.social_links.github}}">GitHub</view>
+        <view wx:if="{{profile.social_links.linkedin}}" class="link-item" bindtap="onCopyLink" data-url="{{profile.social_links.linkedin}}">LinkedIn</view>
+        <view wx:if="{{profile.social_links.email}}" class="link-item" bindtap="onCopyLink" data-url="{{profile.social_links.email}}">Email</view>
+      </view>
+    </view>
+
+    <button class="contact-btn" bindtap="goContact">给我留言</button>
+  </view>
+</block>

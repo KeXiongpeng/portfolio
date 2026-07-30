@@ -1,0 +1,20 @@
+<view class="container">
+  <scroll-view scroll-x class="tag-bar" wx:if="{{tags.length}}">
+    <view class="tag-item {{activeTag === '' ? 'active' : ''}}" bindtap="onClearTag">全部</view>
+    <view class="tag-item {{activeTag === item ? 'active' : ''}}" wx:for="{{tags}}" wx:key="*this" bindtap="onTapTag" data-tag="{{item}}">{{item}}</view>
+  </scroll-view>
+
+  <loading wx:if="{{loading}}" />
+  <block wx:else>
+    <empty wx:if="{{!blogs.length}}" text="暂无文章" />
+    <view class="blog-card card" wx:for="{{blogs}}" wx:key="id" bindtap="onTapBlog" data-slug="{{item.slug}}">
+      <view class="date">{{item.published_at_label}}</view>
+      <view class="title">{{item.title}}</view>
+      <view class="summary line-clamp-2">{{item.summary}}</view>
+      <view class="tags">
+        <tag-pill wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" text="{{t}}" />
+      </view>
+    </view>
+    <loading wx:if="{{loadingMore}}" text="加载更多..." />
+  </block>
+</view>

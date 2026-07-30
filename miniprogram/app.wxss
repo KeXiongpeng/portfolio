@@ -1,0 +1,68 @@
+/* 设计 token */
+page {
+  --color-primary: #3b82f6;
+  --color-primary-light: #dbeafe;
+  --color-text: #18181b;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-bg: #f7f7f9;
+  --color-card: #ffffff;
+  --color-border: #e5e7eb;
+  --radius-sm: 8rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 24rpx;
+  --shadow-card: 0 2rpx 12rpx rgba(0,0,0,0.05);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+/* 通用容器 */
+.container {
+  padding: 32rpx;
+}
+
+/* 卡片 */
+.card {
+  background-color: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24rpx;
+}
+
+/* 标题 */
+.title-xl { font-size: 56rpx; font-weight: 700; }
+.title-lg { font-size: 40rpx; font-weight: 600; }
+.title-md { font-size: 32rpx; font-weight: 600; }
+
+/* 文本辅助 */
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-primary { color: var(--color-primary); }
+
+/* 行截断(2 行) */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 章节标题 */
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title .more {
+  font-size: 26rpx;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+}

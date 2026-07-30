@@ -1,0 +1,19 @@
+.hero-cover { width: 100%; height: 400rpx; }
+.title { font-size: 40rpx; font-weight: 700; margin-bottom: 16rpx; }
+.stack { display: flex; flex-wrap: wrap; margin-bottom: 24rpx; }
+.block-title { font-size: 28rpx; font-weight: 600; margin-bottom: 12rpx; }
+.block-text { font-size: 26rpx; color: var(--color-text-secondary); line-height: 1.8; white-space: pre-wrap; }
+.links { display: flex; gap: 16rpx; margin-top: 32rpx; }
+.link-btn {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  border-radius: var(--radius-md);
+  border: 1rpx solid var(--color-border);
+  font-size: 26rpx;
+}
+.link-btn.primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}

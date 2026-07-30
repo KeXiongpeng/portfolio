@@ -11,3 +11,6 @@ temp/
 ~$*.docx
 # 内部规划文档（不需要上传仓库）
 .superpowers/
+
+.vercel
+.env*

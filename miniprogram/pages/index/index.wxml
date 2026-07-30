@@ -1,0 +1,71 @@
+<view class="container">
+  <loading wx:if="{{loading}}" />
+
+  <block wx:else>
+    <!-- Hero -->
+    <view class="hero">
+      <image wx:if="{{avatarUrl}}" class="hero-avatar" src="{{avatarUrl}}" mode="aspectFill" />
+      <view class="hero-name">{{profile.name || 'Your Name'}}</view>
+      <view class="hero-title">{{profile.title || 'Full-Stack Developer'}}</view>
+      <view wx:if="{{profile.bio}}" class="hero-bio">{{profile.bio}}</view>
+
+      <!-- 社交链接 -->
+      <view class="social-row">
+        <view wx:if="{{profile.social_links.github}}" class="social-btn" bindtap="onCopyLink" data-url="{{profile.social_links.github}}">GitHub</view>
+        <view wx:if="{{profile.social_links.linkedin}}" class="social-btn" bindtap="onCopyLink" data-url="{{profile.social_links.linkedin}}">LinkedIn</view>
+        <view wx:if="{{profile.social_links.email}}" class="social-btn" bindtap="onCopyLink" data-url="{{profile.social_links.email}}">Email</view>
+      </view>
+
+      <!-- 访客计数 -->
+      <view class="visit-badge">👁 {{visitTotal}} 次访问</view>
+    </view>
+
+    <!-- 技能 -->
+    <view wx:if="{{skillCategories.length}}" class="section">
+      <view class="section-title">技能</view>
+      <view class="card" wx:for="{{skillCategories}}" wx:key="category">
+        <view class="skill-cat-title">{{item.category}}</view>
+        <view class="skill-tags">
+          <tag-pill wx:for="{{item.items}}" wx:for-item="s" wx:key="name" text="{{s.name}}" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 精选项目 -->
+    <view wx:if="{{projects.length}}" class="section">
+      <view class="section-title">
+        <text>精选项目</text>
+        <text class="more" bindtap="onTapTab" data-path="/pages/projects/projects">查看全部 →</text>
+      </view>
+      <view class="project-card card" wx:for="{{projects}}" wx:key="id" bindtap="onTapProject" data-slug="{{item.slug}}">
+        <image wx:if="{{item.cover_url}}" class="project-cover" src="{{item.cover_url}}" mode="aspectFill" />
+        <view class="project-title">{{item.title}}</view>
+        <view class="project-desc line-clamp-2">{{item.description}}</view>
+        <view class="project-stack">
+          <tag-pill wx:for="{{item.tech_stack}}" wx:for-item="t" wx:for-index="ti" wx:if="{{ti < 3}}" wx:key="*this" text="{{t}}" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 最新博客 -->
+    <view wx:if="{{blogs.length}}" class="section">
+      <view class="section-title">
+        <text>最新博客</text>
+        <text class="more" bindtap="onTapTab" data-path="/pages/blogs/blogs">查看全部 →</text>
+      </view>
+      <view class="blog-card card" wx:for="{{blogs}}" wx:key="id" bindtap="onTapBlog" data-slug="{{item.slug}}">
+        <view class="blog-date">{{item.published_at_label}}</view>
+        <view class="blog-title">{{item.title}}</view>
+        <view class="blog-summary line-clamp-2">{{item.summary}}</view>
+      </view>
+    </view>
+
+    <!-- 联系入口 -->
+    <view class="contact-cta card" bindtap="goContact">
+      <view class="cta-title">想要合作?</view>
+      <view class="cta-sub">点此给我留言 →</view>
+    </view>
+
+    <empty wx:if="{{!profile && !projects.length && !blogs.length}}" text="暂无内容" />
+  </block>
+</view>

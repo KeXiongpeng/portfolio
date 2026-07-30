@@ -1,0 +1,38 @@
+.block-title { font-size: 32rpx; font-weight: 600; margin-bottom: 24rpx; }
+.form-item { margin-bottom: 28rpx; }
+.label { display: block; font-size: 26rpx; color: var(--color-text-secondary); margin-bottom: 12rpx; }
+
+/* 修复:必须显式设置 height 与 line-height(等高),
+   否则仅靠 padding 撑高会导致 placeholder 字符被垂直拉伸/翻转 */
+.input {
+  width: 100%;
+  height: 88rpx;            /* 固定高度,防止内容撑高不一致 */
+  line-height: 88rpx;       /* 与 height 一致,保证文字垂直居中,避免翻转 */
+  padding: 0 24rpx;         /* 去掉上下 padding,改由 height + line-height 控制高度 */
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 28rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.textarea {
+  width: 100%;
+  height: 240rpx;
+  line-height: 1.6;         /* textarea 用倍数行高,避免行内文字被拉伸 */
+  padding: 20rpx 24rpx;
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 28rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  margin-top: 16rpx;
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 30rpx;
+}
+.submit-btn[disabled] { opacity: 0.6; }

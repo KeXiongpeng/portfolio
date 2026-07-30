@@ -99,6 +99,9 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await api.logout().catch(() => {});
+    // 清除前端域的两个 cookie（token + access_token）
+    document.cookie = 'token=; path=/; max-age=0';
+    document.cookie = 'access_token=; path=/; max-age=0';
     router.replace('/admin/login');
   }
 

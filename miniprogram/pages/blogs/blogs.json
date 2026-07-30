@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "博客",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "loading": "/components/loading/loading",
+    "empty": "/components/empty/empty",
+    "tag-pill": "/components/tag-pill/tag-pill"
+  }
+}

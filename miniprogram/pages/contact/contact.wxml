@@ -1,0 +1,18 @@
+<view class="container">
+  <view class="card">
+    <view class="block-title">给我留言</view>
+    <view class="form-item">
+      <text class="label">姓名</text>
+      <input class="input" placeholder="请输入您的姓名" value="{{form.name}}" bindinput="onInput" data-field="name" />
+    </view>
+    <view class="form-item">
+      <text class="label">邮箱</text>
+      <input class="input" type="text" placeholder="请输入邮箱" value="{{form.email}}" bindinput="onInput" data-field="email" />
+    </view>
+    <view class="form-item">
+      <text class="label">留言</text>
+      <textarea class="textarea" placeholder="请输入留言内容" value="{{form.message}}" bindinput="onInput" data-field="message" maxlength="500" />
+    </view>
+    <button class="submit-btn" bindtap="onSubmit" loading="{{submitting}}" disabled="{{submitting}}">提交</button>
+  </view>
+</view>

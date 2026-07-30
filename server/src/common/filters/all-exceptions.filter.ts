@@ -16,9 +16,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const errorMessage = typeof message === 'string' ? message : (message as any).message || 'Internal server error';
 
+    // 临时：非 HttpException 时附带错误详情，便于线上排查
+    const detail = exception instanceof HttpException ? null : (exception instanceof Error ? exception.message : String(exception));
+
     response.status(status).json({
       statusCode: status,
       message: Array.isArray(errorMessage) ? errorMessage[0] : errorMessage,
+      ...(detail ? { error: detail } : {}),
     });
   }
 }

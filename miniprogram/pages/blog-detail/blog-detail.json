@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "文章详情",
+  "usingComponents": {
+    "loading": "/components/loading/loading",
+    "tag-pill": "/components/tag-pill/tag-pill",
+    "towxml": "/towxml/towxml"
+  }
+}

@@ -1,0 +1,22 @@
+<view class="container">
+  <!-- 标签筛选 -->
+  <scroll-view scroll-x class="tag-bar" wx:if="{{tags.length}}">
+    <view class="tag-item {{activeTag === '' ? 'active' : ''}}" bindtap="onClearTag">全部</view>
+    <view class="tag-item {{activeTag === item ? 'active' : ''}}" wx:for="{{tags}}" wx:key="*this" bindtap="onTapTag" data-tag="{{item}}">{{item}}</view>
+  </scroll-view>
+
+  <loading wx:if="{{loading}}" />
+  <block wx:else>
+    <empty wx:if="{{!projects.length}}" text="暂无项目" />
+    <view class="project-card card" wx:for="{{projects}}" wx:key="id" bindtap="onTapProject" data-slug="{{item.slug}}">
+      <image wx:if="{{item.cover_url}}" class="cover" src="{{item.cover_url}}" mode="aspectFill" />
+      <view class="body">
+        <view class="title">{{item.title}}</view>
+        <view class="desc line-clamp-2">{{item.description}}</view>
+        <view class="stack">
+          <tag-pill wx:for="{{item.tech_stack}}" wx:for-item="t" wx:for-index="ti" wx:if="{{ti < 4}}" wx:key="*this" text="{{t}}" />
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
