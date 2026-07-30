@@ -15,6 +15,7 @@ export class ProfileController {
     return this.profileService.getPublicProfile();
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Get('admin/profile')
   getAdminProfile() {

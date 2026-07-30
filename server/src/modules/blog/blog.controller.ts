@@ -26,18 +26,21 @@ export class BlogController {
     return this.blogService.getPublicBlog(slug);
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Get('admin/blogs')
   getAllBlogs() {
     return this.blogService.getAllBlogs();
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Post('admin/blogs')
   createBlog(@Body() dto: CreateBlogDto) {
     return this.blogService.createBlog(dto);
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Put('admin/blogs/:id')
   updateBlog(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateBlogDto) {
@@ -51,6 +54,7 @@ export class BlogController {
     return this.blogService.deleteBlog(id);
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Patch('admin/blogs/:id/publish')
   publishBlog(@Param('id', ParseIntPipe) id: number) {

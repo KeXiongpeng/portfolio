@@ -22,6 +22,7 @@ export class ContactController {
     return this.contactService.getAllContacts();
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Patch('admin/contacts/:id/read')
   markAsRead(@Param('id', ParseIntPipe) id: number) {
