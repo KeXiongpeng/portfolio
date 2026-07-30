@@ -99,10 +99,8 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     await api.logout().catch(() => {});
-    // 清除前端域的两个 cookie（token + access_token）
-    document.cookie = 'token=; path=/; max-age=0';
-    document.cookie = 'access_token=; path=/; max-age=0';
-    router.replace('/admin/login');
+    // token 是 httpOnly cookie，JS 无法清除，必须通过服务端路由清除
+    window.location.href = '/api/auth/clear-cookie';
   }
 
   // 计算 selectedKeys：支持子路径高亮父级
