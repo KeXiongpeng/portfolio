@@ -3,6 +3,7 @@ import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 import { Public } from '../../common/decorators/public.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('api')
 export class ContactController {
@@ -14,6 +15,7 @@ export class ContactController {
     return this.contactService.createContact(dto);
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Get('admin/contacts')
   getContacts() {

@@ -5,6 +5,7 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { ReorderProjectsDto } from './dto/reorder-projects.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 import { Public } from '../../common/decorators/public.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('api')
 export class ProjectController {
@@ -46,6 +47,7 @@ export class ProjectController {
     return this.projectService.deleteProject(id);
   }
 
+  @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @Put('admin/projects/reorder')
   reorderProjects(@Body() dto: ReorderProjectsDto) {

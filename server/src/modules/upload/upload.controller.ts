@@ -3,13 +3,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, memoryStorage } from 'multer';
 import { extname, join } from 'path';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 const MAX_SIZE = parseInt(process.env.MAX_FILE_SIZE || '5242880', 10);
 
-// 通过环境变量判断部署模式：
-// - 生产环境（Vercel）会注入 BLOB_READ_WRITE_TOKEN → 用内存存储 + Vercel Blob
-// - 本地开发没有此 token → 用磁盘存储（保持原有行为，本地测试不受影响）
-const isProd = !!process.env.BLOB_READ_WRITE_TOKEN;
+// 通过 VERCEL 环境变量判断部署模式（不能用 BLOB_READ_WRITE_TOKEN，
+// 因为 Vercel 启用 OIDC 后该值为空字符串，!!"" = false）
+const isProd = !!process.env.VERCEL;
 
 // 按需懒加载 @vercel/blob，避免本地开发引入多余依赖
 async function uploadToBlob(file: Express.Multer.File): Promise<string> {
@@ -33,6 +33,7 @@ const storage = isProd
       },
     });
 
+@Roles('admin')
 @UseGuards(JwtAuthGuard)
 @Controller('api/admin/upload')
 @UseInterceptors(FileInterceptor('file', {
@@ -48,10 +49,23 @@ const storage = isProd
 export class UploadController {
   @Post()
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file received by server (multer may have failed to parse multipart)');
+    }
+
     if (isProd) {
-      // 生产环境：上传到 Vercel Blob，返回完整 CDN URL
-      const url = await uploadToBlob(file);
-      return { url };
+      try {
+        const { put } = await import('@vercel/blob');
+        const blob = await put(
+          `uploads/${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`,
+          file.buffer!,
+          { access: 'public', contentType: file.mimetype },
+        );
+        return { url: blob.url };
+      } catch (err: any) {
+        console.error('[Upload] Blob upload failed:', err);
+        throw new BadRequestException(`Blob upload failed: ${err?.message || String(err)}`);
+      }
     }
     // 本地开发：文件已存到磁盘，返回相对路径（保持原有行为）
     return { url: `/uploads/${file.filename}` };
