@@ -20,6 +20,14 @@ export function resolveAssetUrl(url?: string | null): string | undefined {
   return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
 }
 
+// 读取可读 cookie（由 /api/auth/set-cookie 设置的 access_token）
+// Vercel 跨域部署下 api 域 cookie 丢失，改用 Authorization header 携带 token
+function getAccessToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 export async function fetchApi<T>(
   path: string,
   options: RequestInit = {},
@@ -32,11 +40,18 @@ export async function fetchApi<T>(
   // - 否则默认 no-store，保证管理端数据实时
   const hasNextRevalidate = options.next && 'revalidate' in (options.next as object);
   const finalCache = options.cache ?? (hasNextRevalidate ? undefined : 'no-store');
+
+  // 附加 Authorization header（跨域部署的认证方式）
+  const token = getAccessToken();
+  const headers: Record<string, string> = isFormData ? {} : { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  // 合并调用方传入的 headers（允许覆盖）
+  const userHeaders = (options.headers as Record<string, string>) || {};
+  Object.keys(userHeaders).forEach((k) => { headers[k] = userHeaders[k]; });
+
   const res = await fetch(`${API_URL}${path}`, {
     credentials: 'include',
-    headers: isFormData
-      ? options.headers
-      : { 'Content-Type': 'application/json', ...options.headers },
+    headers,
     ...options,
     ...(finalCache ? { cache: finalCache } : {}),
   });
@@ -66,6 +81,10 @@ export const api = {
   loginGithub: () => {
     window.location.href = `${API_URL}/api/auth/github`;
   },
+  register: (data: { username: string; email: string; password: string }) =>
+    fetchApi<{ token: string }>('/api/auth/register', { method: 'POST', body: JSON.stringify(data) }),
+  login: (data: { username: string; password: string }) =>
+    fetchApi<{ token: string }>('/api/auth/login', { method: 'POST', body: JSON.stringify(data) }),
   logout: () => fetchApi<void>('/api/auth/logout', { method: 'POST' }),
 
   // 管理接口
