@@ -8,8 +8,8 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (!pathname.startsWith('/admin')) return NextResponse.next();
 
-  // 登录页本身不拦截
-  if (pathname === '/admin/login') return NextResponse.next();
+  // 登录页、注册页本身不拦截
+  if (pathname === '/admin/login' || pathname === '/admin/register') return NextResponse.next();
 
   // 只检查 token cookie 是否存在（不验证有效性，验证交给后端 API）
   const token = req.cookies.get('token')?.value;
