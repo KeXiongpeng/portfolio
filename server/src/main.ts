@@ -1,9 +1,18 @@
 import { join } from 'path';
 import * as dotenv from 'dotenv';
+import { existsSync } from 'fs';
 
 // 仅本地开发加载.env;Vercel会自动注入环境变量
 if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: join(process.cwd(), '..', '.env') });
+  // 优先加载 .env.local(本地开发),如果不存在则加载 .env
+  const envLocalPath = join(process.cwd(), '..', '.env.local');
+  const envPath = join(process.cwd(), '..', '.env');
+
+  if (existsSync(envLocalPath)) {
+    dotenv.config({ path: envLocalPath });
+  } else {
+    dotenv.config({ path: envPath });
+  }
 }
 
 import { NestFactory } from '@nestjs/core';

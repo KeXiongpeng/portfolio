@@ -24,11 +24,40 @@ function LoginInner() {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // 诊断日志：记录登录开始时的状态
+    console.log('=== 登录诊断日志 - 开始 ===');
+    console.log('1. redirect 参数:', redirect);
+    console.log('2. window.location.href:', window.location.href);
+    console.log('3. window.location.host:', window.location.host);
+    console.log('4. window.location.hostname:', window.location.hostname);
+    console.log('5. NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+    console.log('6. NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL);
+
     try {
       const { token } = await api.login({ username, password });
-      // 通过前端中转路由设置 cookie（复用现有机制）
-      window.location.href = `/api/auth/set-cookie?token=${encodeURIComponent(token)}&dest=${encodeURIComponent(redirect)}`;
+      console.log('7. 登录成功，获取到 token');
+
+      // 1) 调 API route 设置 httpOnly token cookie（给 middleware 用）
+      await fetch(`/api/auth/set-cookie?token=${encodeURIComponent(token)}`);
+      console.log('8. 设置 cookie 成功');
+
+      // 2) 客户端设置可读 access_token cookie（给前端 fetch 的 Authorization header 用）
+      const maxAge = 7 * 24 * 60 * 60;
+      document.cookie = `access_token=${encodeURIComponent(token)}; path=/; max-age=${maxAge}; samesite=lax`;
+      console.log('9. 客户端 cookie 设置成功');
+
+      // 3) 使用 window.location 进行硬跳转，避免 Next.js router 的 hostname 问题
+      console.log('10. 准备跳转到:', redirect);
+      console.log('11. 当前 origin:', window.location.origin);
+      console.log('12. 完整跳转 URL:', `${window.location.origin}${redirect}`);
+      console.log('=== 登录诊断日志 - 结束 ===');
+
+      // 关键修复：使用 window.location.href 而不是 router.push
+      // 确保使用当前页面的 origin，而不是容器 hostname
+      window.location.href = redirect;
     } catch (err) {
+      console.error('登录失败:', err);
       setError(err instanceof ApiError ? err.message : '登录失败，请重试');
       setLoading(false);
     }
@@ -42,7 +71,6 @@ function LoginInner() {
         <h1 className="text-xl font-bold mb-1 text-gray-900 text-center">管理后台</h1>
         <p className="text-gray-500 mb-6 text-center text-sm">登录你的账号</p>
 
-        {/* 账号密码登录（主要入口） */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">用户名</label>
@@ -78,14 +106,12 @@ function LoginInner() {
           </button>
         </form>
 
-        {/* 分割线 */}
         <div className="flex items-center my-5">
           <div className="flex-1 border-t border-gray-200" />
           <span className="px-3 text-gray-400 text-xs">或使用以下方式</span>
           <div className="flex-1 border-t border-gray-200" />
         </div>
 
-        {/* GitHub 登录（次要选项） */}
         <a
           href={loginUrl}
           className="block w-full py-2.5 px-4 bg-gray-900 hover:bg-gray-800 text-white rounded-md font-medium transition-colors no-underline text-center"
@@ -93,7 +119,6 @@ function LoginInner() {
           使用 GitHub 登录
         </a>
 
-        {/* 注册引导 */}
         <p className="text-center text-sm text-gray-500 mt-5">
           没有账号？{' '}
           <Link href="/admin/register" className="text-blue-600 hover:underline">

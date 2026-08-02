@@ -1,6 +1,6 @@
 // config/api.js
-// 开发环境用本地后端;上线前改为生产 HTTPS 域名,并在小程序后台配置「request 合法域名」
-const BASE_URL = 'http://localhost:3001';
+// 生产环境 HTTPS 域名（需在微信小程序后台配置「request 合法域名」）
+const BASE_URL = 'http://120.77.222.102:3001';
 
 // 所有公开接口路径
 const API_PATHS = {
