@@ -5,6 +5,7 @@ import type {
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+console.log('[API_URL] 实际加载值:', API_URL);
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -49,12 +50,23 @@ export async function fetchApi<T>(
   const userHeaders = (options.headers as Record<string, string>) || {};
   Object.keys(userHeaders).forEach((k) => { headers[k] = userHeaders[k]; });
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const fullUrl = `${API_URL}${path}`;
+  console.log('[fetchApi DEBUG] === 请求详情 ===');
+  console.log('[fetchApi DEBUG] API_URL:', API_URL);
+  console.log('[fetchApi DEBUG] fullUrl:', fullUrl);
+  console.log('[fetchApi DEBUG] method:', options.method || 'GET');
+  console.log('[fetchApi DEBUG] headers:', JSON.stringify(headers));
+  console.log('[fetchApi DEBUG] credentials: include');
+
+  const res = await fetch(fullUrl, {
     credentials: 'include',
     headers,
     ...options,
     ...(finalCache ? { cache: finalCache } : {}),
   });
+
+  console.log('[fetchApi DEBUG] response.status:', res.status, res.statusText);
+  console.log('[fetchApi DEBUG] === 请求结束 ===');
 
   if (!res.ok) {
     const msg = (await res.json().catch(() => ({ message: 'Request failed' }))) as { message?: string };

@@ -33,10 +33,11 @@ export function middleware(req: NextRequest) {
     }
 
     // 如果没有 x-forwarded-host，尝试使用环境变量或默认IP
-    const correctHost = process.env.HOSTNAME || '120.77.222.102';
+    const correctHost = process.env.HOSTNAME || req.headers.get('x-forwarded-host')?.split(':')[0] || 'kxp.o9k.cn';
     const correctUrl = new URL(req.url);
     correctUrl.host = correctHost;
-    correctUrl.port = '3000';
+    correctUrl.port = '443';
+    correctUrl.protocol = 'https:';
     console.log('使用默认 host 重定向到:', correctUrl.toString());
     return NextResponse.redirect(correctUrl);
   }

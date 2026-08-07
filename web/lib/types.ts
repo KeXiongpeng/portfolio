@@ -60,6 +60,7 @@ export interface Blog {
   slug: string;
   content: string;
   summary?: string;
+  cover_url?: string;
   tags: string[];
   status: 'draft' | 'published';
   view_count: number;

@@ -2,7 +2,7 @@
   "miniprogramRoot": "./",
   "projectname": "portfolio-miniprogram",
   "description": "个人作品集小程序",
-  "appid": "wx8888890417ab685b",
+  "appid": "wx5477117250c832b6",
   "setting": {
     "urlCheck": false,
     "es6": true,
@@ -30,7 +30,7 @@
     }
   },
   "compileType": "miniprogram",
-  "libVersion": "3.0.0",
+  "libVersion": "3.17.0",
   "simulatorPluginLibVersion": {},
   "packOptions": {
     "ignore": [],

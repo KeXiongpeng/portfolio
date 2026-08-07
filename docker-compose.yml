@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   # ── nginx 反向代理 + Let's Encrypt 自动 HTTPS ──
   nginx:
-    image: docker.1ms.run/nginxproxy/nginx-proxy:latest
+    image: nginxproxy/nginx-proxy:latest
     restart: unless-stopped
     ports:
       - '0.0.0.0:80:80'
@@ -17,15 +15,17 @@ services:
       - app-net
 
   acme:
-    image: docker.1ms.run/nginxproxy/acme-companion:latest
+    image: nginxproxy/acme-companion:latest
     restart: unless-stopped
     volumes_from:
       - nginx
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - nginx_acme:/etc/acme.sh
+      - acme:/etc/acme.sh
     environment:
       - DEFAULT_EMAIL=${ACME_EMAIL:-admin@kxpwty.cn}
+    networks:
+      - app-net
 
   # ── PostgreSQL ──
   postgres:
@@ -59,8 +59,8 @@ services:
   server:
     image: crpi-7znqdwo2lmmjl5kg.cn-shenzhen.personal.cr.aliyuncs.com/my-project-portfolio/server:v1.0.1
     restart: unless-stopped
-    ports:
-      - '3001:3001'
+    expose:
+      - '3001'
     env_file:
       - .env
     depends_on:
@@ -71,26 +71,29 @@ services:
     volumes:
       - ./uploads:/app/uploads
     environment:
-      # 支持 IP 访问（域名备案后改回域名）
-      - VIRTUAL_HOST=api.kxpwty.cn,120.77.222.102
-      - LETSENCRYPT_HOST=api.kxpwty.cn
+      - VIRTUAL_HOST=api.kxp.o9k.cn
+      - LETSENCRYPT_HOST=api.kxp.o9k.cn
       - VIRTUAL_PORT=3001
-      # 设置正确的前端和回调 URL
-      - FRONTEND_URL=http://120.77.222.102:3000
-      - GITHUB_CALLBACK_URL=http://120.77.222.102:3001/api/auth/github/callback
+      - FRONTEND_URL=https://kxp.o9k.cn
+      - GITHUB_CALLBACK_URL=https://api.kxp.o9k.cn/api/auth/github/callback
     networks:
       - app-net
 
   # ── Next.js 前端（含管理员后台 /admin） ──
   web:
-    image: my-web-fixed:v2
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_URL: https://api.kxp.o9k.cn
+        NEXT_PUBLIC_SITE_URL: https://kxp.o9k.cn
+    image: crpi-7znqdwo2lmmjl5kg.cn-shenzhen.personal.cr.aliyuncs.com/my-project-portfolio/web:v5
     restart: unless-stopped
-    ports:
-      - '3000:3000'
+    expose:
+      - '3000'
     environment:
-      # 前端访问后端的API地址
-      - NEXT_PUBLIC_API_URL=http://120.77.222.102:3001
-      # 注意：HOSTNAME由start.sh脚本在容器内设置，不在这里配置
+      - VIRTUAL_HOST=kxp.o9k.cn
+      - LETSENCRYPT_HOST=kxp.o9k.cn
+      - VIRTUAL_PORT=3000
     depends_on:
       - server
     networks:
@@ -102,7 +105,7 @@ volumes:
   nginx_certs:
   nginx_vhost:
   nginx_html:
-  nginx_acme:
+  acme:
 
 networks:
   app-net:

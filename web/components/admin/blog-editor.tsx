@@ -2,7 +2,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Form, Input, Button, Space, message } from 'antd';
+import { Form, Input, Button, Space, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import { api } from '@/lib/api';
 import MDEditor from '@/components/admin/md-editor-wrapper';
 import { commands as mdCommands } from '@uiw/react-md-editor';
@@ -49,6 +50,7 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
   const [form] = Form.useForm();
   const [content, setContent] = useState(initial?.content || '');
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initial) {
@@ -57,9 +59,25 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
         slug: initial.slug,
         summary: initial.summary,
         tags: initial.tags.join(', '),
+        cover_url: initial.cover_url || '',
       });
     }
   }, [initial, form]);
+
+  async function uploadCover(file: File): Promise<string> {
+    setUploading(true);
+    try {
+      const res = await api.admin.uploadImage(file);
+      form.setFieldValue('cover_url', res.url);
+      message.success('封面上传成功');
+      return res.url;
+    } catch {
+      message.error('封面上传失败');
+      throw new Error('upload failed');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function save(status: 'draft' | 'published') {
     try {
@@ -71,6 +89,7 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
         summary: values.summary,
         tags: (values.tags as string).split(',').map((t) => t.trim()).filter(Boolean),
         content,
+        cover_url: values.cover_url,
       };
       if (initial) {
         await api.admin.updateBlog(initial.id, payload);
@@ -107,6 +126,15 @@ export function BlogEditor({ initial }: { initial?: Blog }) {
         <Form.Item name="tags" label="标签（逗号分隔）">
           <Input placeholder="React, NestJS, Docker" />
         </Form.Item>
+        <Form.Item name="cover_url" label="封面图 URL">
+          <Input placeholder="https://example.com/cover.jpg" />
+        </Form.Item>
+        <Upload
+          beforeUpload={async (file) => { await uploadCover(file); return false; }}
+          showUploadList={false}
+        >
+          <a style={{ opacity: uploading ? 0.5 : 1 }}><UploadOutlined /> {uploading ? '上传中...' : '上传封面'}</a>
+        </Upload>
       </Form>
 
       <div style={{ marginBottom: 8, fontWeight: 500 }}>正文（Markdown）</div>

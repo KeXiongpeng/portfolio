@@ -17,6 +17,9 @@ export class Blog {
   @Column({ length: 500, nullable: true })
   summary: string;
 
+  @Column({ length: 500, nullable: true })
+  cover_url: string;
+
   @Column('text', { array: true, default: [] })
   tags: string[];
 

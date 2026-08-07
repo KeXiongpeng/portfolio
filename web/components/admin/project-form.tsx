@@ -1,6 +1,6 @@
 // web/components/admin/project-form.tsx
 'use client';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Form, Input, Switch, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { api } from '@/lib/api';
@@ -15,6 +15,7 @@ interface Props {
 
 export function ProjectForm({ open, initial, onClose, onSaved }: Props) {
   const [form] = Form.useForm();
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initial) {
@@ -36,9 +37,18 @@ export function ProjectForm({ open, initial, onClose, onSaved }: Props) {
   }, [initial, form, open]);
 
   async function uploadCover(file: File): Promise<string> {
-    const res = await api.admin.uploadImage(file);
-    form.setFieldValue('cover_url', res.url);
-    return res.url;
+    setUploading(true);
+    try {
+      const res = await api.admin.uploadImage(file);
+      form.setFieldValue('cover_url', res.url);
+      message.success('封面上传成功');
+      return res.url;
+    } catch {
+      message.error('封面上传失败');
+      throw new Error('upload failed');
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function submit() {
@@ -72,10 +82,10 @@ export function ProjectForm({ open, initial, onClose, onSaved }: Props) {
           <Input />
         </Form.Item>
         <Upload
-          beforeUpload={(file) => { uploadCover(file); return false; }}
+          beforeUpload={async (file) => { await uploadCover(file); return false; }}
           showUploadList={false}
         >
-          <a><UploadOutlined /> 上传封面</a>
+          <a style={{ opacity: uploading ? 0.5 : 1 }}><UploadOutlined /> {uploading ? '上传中...' : '上传封面'}</a>
         </Upload>
         <Form.Item name="is_visible" label="前台展示" valuePropName="checked"><Switch /></Form.Item>
       </Form>

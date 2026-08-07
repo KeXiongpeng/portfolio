@@ -26,7 +26,7 @@ async function uploadToBlob(file: Express.Multer.File): Promise<string> {
 const storage = isProd
   ? memoryStorage()
   : diskStorage({
-      destination: join(__dirname, '..', '..', '..', 'uploads'),
+      destination: join(process.cwd(), 'uploads'),
       filename: (_req, file, cb) => {
         const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
         cb(null, unique);

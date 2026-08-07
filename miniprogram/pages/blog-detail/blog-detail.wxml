@@ -1,6 +1,7 @@
 <loading wx:if="{{loading}}" />
 <block wx:elif="{{blog}}">
   <view class="container">
+    <image wx:if="{{blog.cover_url}}" class="hero-cover" src="{{blog.cover_url}}" mode="aspectFill" />
     <view class="title">{{blog.title}}</view>
     <view class="meta">
       <text>{{blog.published_at_label}}</text>

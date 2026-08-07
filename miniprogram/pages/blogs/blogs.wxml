@@ -8,6 +8,7 @@
   <block wx:else>
     <empty wx:if="{{!blogs.length}}" text="暂无文章" />
     <view class="blog-card card" wx:for="{{blogs}}" wx:key="id" bindtap="onTapBlog" data-slug="{{item.slug}}">
+      <image wx:if="{{item.cover_url}}" class="cover" src="{{item.cover_url}}" mode="aspectFill" />
       <view class="date">{{item.published_at_label}}</view>
       <view class="title">{{item.title}}</view>
       <view class="summary line-clamp-2">{{item.summary}}</view>

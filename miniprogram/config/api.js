@@ -1,6 +1,10 @@
 // config/api.js
-// 生产环境 HTTPS 域名（需在微信小程序后台配置「request 合法域名」）
-const BASE_URL = 'http://120.77.222.102:3001';
+// API 配置 - 自动根据环境切换域名
+
+const { getConfig } = require('./env');
+
+// 从环境配置获取 BASE_URL
+const { BASE_URL } = getConfig();
 
 // 所有公开接口路径
 const API_PATHS = {

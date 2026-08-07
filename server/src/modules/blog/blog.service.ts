@@ -60,7 +60,9 @@ export class BlogService {
     const blog = await this.blogRepo.findOne({ where: { id } });
     if (!blog) throw new NotFoundException('Blog not found');
     Object.assign(blog, dto);
-    return this.blogRepo.save(blog);
+    const saved = await this.blogRepo.save(blog);
+    await this.clearListCache();
+    return saved;
   }
 
   async deleteBlog(id: number) {

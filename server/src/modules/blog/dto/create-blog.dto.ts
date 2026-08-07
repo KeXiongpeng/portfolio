@@ -14,6 +14,10 @@ export class CreateBlogDto {
   @IsOptional()
   summary?: string;
 
+  @IsString()
+  @IsOptional()
+  cover_url?: string;
+
   @IsArray()
   @IsOptional()
   tags?: string[];

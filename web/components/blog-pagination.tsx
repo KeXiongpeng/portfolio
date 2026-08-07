@@ -53,15 +53,22 @@ export function BlogList({ initialBlogs, totalPages, tags }: {
           <Link
             key={b.id}
             href={`/blog/${b.slug}`}
-            className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 transition-all duration-300 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:-translate-y-0.5"
+            className="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden transition-all duration-300 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:-translate-y-0.5"
           >
-            <p className="text-xs text-gray-500 dark:text-gray-400">{b.published_at?.slice(0, 10)} · 阅读 {b.view_count}</p>
-            <h3 className="font-semibold mt-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">{b.title}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 line-clamp-3">{b.summary}</p>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {b.tags.map((t) => (
-                <span key={t} className="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">{t}</span>
-              ))}
+            {b.cover_url && (
+              <div className="h-44 overflow-hidden">
+                <img src={b.cover_url} alt={b.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+              </div>
+            )}
+            <div className="p-6">
+              <p className="text-xs text-gray-500 dark:text-gray-400">{b.published_at?.slice(0, 10)} · 阅读 {b.view_count}</p>
+              <h3 className="font-semibold mt-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">{b.title}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 line-clamp-3">{b.summary}</p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {b.tags.map((t) => (
+                  <span key={t} className="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">{t}</span>
+                ))}
+              </div>
             </div>
           </Link>
         ))}

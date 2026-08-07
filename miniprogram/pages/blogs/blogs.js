@@ -1,6 +1,7 @@
 // pages/blogs/blogs.js
 const api = require('../../utils/api');
 const { formatDate } = require('../../utils/time');
+const { resolveAssetUrl } = require('../../utils/asset');
 
 Page({
   data: {
@@ -38,6 +39,7 @@ Page({
       const res = await api.getBlogs(page, limit, activeTag || undefined);
       const items = (res.items || []).map((b) => ({
         ...b,
+        cover_url: resolveAssetUrl(b.cover_url),
         published_at_label: formatDate(b.published_at),
       }));
       // 首次加载聚合标签

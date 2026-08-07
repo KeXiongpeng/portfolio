@@ -14,9 +14,17 @@ const nextConfig = {
       { protocol: 'https', hostname: 'api.kxpwty.cn' },
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
       { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: '120.77.222.102' },
+      { protocol: 'https', hostname: 'api.kxp.o9k.cn' },
       { protocol: 'http', hostname: 'localhost' },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/uploads/:path*`,
+      },
+    ];
   },
 };
 module.exports = nextConfig;

@@ -72,6 +72,12 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           ← 返回博客列表
         </Link>
 
+        {blog.cover_url && (
+          <div className="mb-8 rounded-xl overflow-hidden">
+            <img src={blog.cover_url} alt={blog.title} className="w-full object-cover" />
+          </div>
+        )}
+
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {blog.published_at?.slice(0, 10)} · 阅读 {blog.view_count}
         </p>

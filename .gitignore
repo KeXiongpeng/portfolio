@@ -11,6 +11,17 @@ temp/
 ~$*.docx
 # 内部规划文档（不需要上传仓库）
 .superpowers/
-
+# 文档和日志（不推送到仓库）
+docs/
+logs/
+*.md
+!server/README.md
+!web/README.md
 .vercel
 .env*
+# Docker 备份
+Docker_Backup_*/
+# 临时脚本
+*.py
+# nginx 配置（服务器上管理）
+nginx.conf
